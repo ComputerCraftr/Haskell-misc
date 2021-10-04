@@ -2,5 +2,8 @@ module Lib
     ( someFunc
     ) where
 
+import Karatsuba
+
 someFunc :: IO ()
-someFunc = putStrLn "someFunc"
+someFunc = do
+    print (karatsubaMultiplyRecursive 4728407613652922552759072682000430063038909260147253520810242655 6600837613863385147035699626875158239463295294103558148787165987)
