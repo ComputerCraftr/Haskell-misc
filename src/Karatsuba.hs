@@ -7,7 +7,7 @@ integerDigitsBase256Helper :: (Integral a) => a -> a -> a
 integerDigitsBase256Helper number digits
     | number <= 0 = digits
     -- Divide by 256 until the number is rounded down to zero
-    | otherwise = integerDigitsBase256Helper (number `quot` 256) (digits + 1)
+    | otherwise = integerDigitsBase256Helper (number `quot` 256) $! (digits + 1)
 
 integerDigitsBase256 :: (Integral a) => a -> a
 integerDigitsBase256 number = integerDigitsBase256Helper number 0
