@@ -27,6 +27,7 @@ library
   exposed-modules:
       Karatsuba
       Lib
+      MonadTest
   other-modules:
       Paths_Haskell_misc
   hs-source-dirs:

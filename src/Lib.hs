@@ -4,6 +4,7 @@ module Lib
 
 import Karatsuba
     ( karatsubaMultiplyRecursive, integerDigitsBase256 )
+import MonadTest ( lastThreeElementsLessThan100 )
 
 someFunc :: IO ()
 someFunc = do
@@ -11,3 +12,5 @@ someFunc = do
     print (karatsubaMultiplyRecursive 70058738427051160334746874429252579119928572246444725963276835611 86519327888246410496398575518280509016134914626047673943654504547)
     print (karatsubaMultiplyRecursive 238731412424945154431470551094200359684685955096667820591767288323 503689947939754385148039592295214272825977641172541362111833935209)
     print (integerDigitsBase256 65536)
+    print (lastThreeElementsLessThan100 [3242, 50, 243, 50, 70, 50, 90])
+    print (lastThreeElementsLessThan100 [3242, 50, 243, 50, 700, 50, 90])
