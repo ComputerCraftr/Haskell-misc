@@ -5,6 +5,7 @@ module Lib
 import Karatsuba
     ( karatsubaMultiplyRecursive, integerDigitsBase256 )
 import MonadTest ( lastThreeElementsLessThan100 )
+import IOTest (getTicketsA)
 
 someFunc :: IO ()
 someFunc = do
@@ -14,3 +15,4 @@ someFunc = do
     print (integerDigitsBase256 65536)
     print (lastThreeElementsLessThan100 [3242, 50, 243, 50, 70, 50, 90])
     print (lastThreeElementsLessThan100 [3242, 50, 243, 50, 700, 50, 90])
+    getTicketsA
