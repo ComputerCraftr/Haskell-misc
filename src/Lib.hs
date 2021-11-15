@@ -6,6 +6,7 @@ import NumDigits ( integerDigitsBase256 )
 import Karatsuba ( karatsubaMultiplyRecursive )
 import MonadTest ( lastThreeElementsLessThan100 )
 import IOTest (getTickets, printTickets, getInteger)
+import Collatz ( find3nPlus1 )
 
 someFunc :: IO ()
 someFunc = do
@@ -17,3 +18,5 @@ someFunc = do
     --print (lastThreeElementsLessThan100 [3242, 50, 243, 50, 700, 50, 90])
     sectionTickets <- getTickets
     printTickets sectionTickets
+    testInteger <- getInteger
+    putStrLn ("3n+1 steps, max digits = " ++ show (find3nPlus1 testInteger))
