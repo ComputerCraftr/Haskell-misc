@@ -9,7 +9,7 @@ import IOTest ( getSingleChar )
 runBF :: [Char] -> IO ()
 runBF code = do
     runBFHelper code (length code) 0 (repeat 0) 0 []
-    putStrLn ""
+    putChar '\n'
 
 incrementElement :: [Int] -> Int -> [Int]
 incrementElement listInput element
@@ -60,7 +60,7 @@ runBFHelper !code !codeLen !index !stack !pointer !loopStartIndexes
         '+' -> runBFHelper code codeLen (index + 1) (incrementElement stack pointer) pointer loopStartIndexes
         '-' -> runBFHelper code codeLen (index + 1) (decrementElement stack pointer) pointer loopStartIndexes
         '.' -> do
-            putStr [chr (stack !! pointer)]
+            putChar (chr (stack !! pointer))
             runBFHelper code codeLen (index + 1) stack pointer loopStartIndexes
         ',' -> do
             inputChar <- getSingleChar
