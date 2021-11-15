@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 module IOTest
     ( getTickets
     , printTickets
@@ -8,7 +9,7 @@ import Text.Read ( readMaybe )
 import Data.Maybe ( fromJust, isNothing )
 
 getTicketsSection :: Char -> Int -> IO Int
-getTicketsSection currentSection numSeats = do
+getTicketsSection !currentSection !numSeats = do
     putStrLn ("How many tickets were sold for section " ++ [currentSection] ++ "?")
     inputLine <- getLine
     let inputNum = readMaybe inputLine :: Maybe Int

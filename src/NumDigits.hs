@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 module NumDigits 
     ( integerDigitsBaseN
     , integerDigitsBase10
@@ -5,10 +6,10 @@ module NumDigits
     ) where
 
 integerDigitsBaseNHelper :: (Integral a) => a -> a -> a -> a
-integerDigitsBaseNHelper number base digits
+integerDigitsBaseNHelper !number !base !digits
     | number <= 0 = digits
     -- Divide by base until the number is rounded down to zero
-    | otherwise = integerDigitsBaseNHelper (number `quot` base) base $! (digits + 1)
+    | otherwise = integerDigitsBaseNHelper (number `quot` base) base (digits + 1)
 
 integerDigitsBaseN :: (Integral a) => a -> a -> a
 integerDigitsBaseN number base = integerDigitsBaseNHelper number base 0
