@@ -7,6 +7,7 @@ import Karatsuba ( karatsubaMultiplyRecursive )
 import MonadTest ( lastThreeElementsLessThan100 )
 import IOTest ( getInt, getInteger, getTickets, printTickets )
 import Collatz ( find3nPlus1 )
+import BFInterpreter ( runBF )
 
 someFunc :: IO ()
 someFunc = do
@@ -16,7 +17,10 @@ someFunc = do
     --print (integerDigitsBase256 65536)
     --print (lastThreeElementsLessThan100 [3242, 50, 243, 50, 70, 50, 90])
     --print (lastThreeElementsLessThan100 [3242, 50, 243, 50, 700, 50, 90])
-    sectionTickets <- getTickets
-    printTickets sectionTickets
+    --sectionTickets <- getTickets
+    --printTickets sectionTickets
+    --putStrLn "Input brainfuck program:"
+    --inputCode <- getLine
+    runBF "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++."
     testInteger <- getInteger
     putStrLn ("3n+1 steps, max digits = " ++ show (find3nPlus1 testInteger))

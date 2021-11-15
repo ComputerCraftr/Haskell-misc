@@ -2,6 +2,7 @@
 module IOTest (
     getInt,
     getInteger,
+    getSingleChar,
     getTickets,
     printTickets
 ) where
@@ -22,6 +23,15 @@ getInteger = do
     inputLine <- getLine
     let inputNum = readMaybe inputLine :: Maybe Integer
     maybe getInteger return inputNum
+
+getSingleChar :: IO Char
+getSingleChar = do
+    putStrLn "Please enter a character:"
+    inputLine <- getLine
+    if length inputLine == 1 then
+        return $! head inputLine
+    else
+        getSingleChar
 
 getTicketsSection :: Char -> Int -> IO Int
 getTicketsSection !currentSection !numSeats = do
