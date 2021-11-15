@@ -5,7 +5,7 @@ module Lib
 import NumDigits ( integerDigitsBase256 )
 import Karatsuba ( karatsubaMultiplyRecursive )
 import MonadTest ( lastThreeElementsLessThan100 )
-import IOTest (getTickets, printTickets, getInteger)
+import IOTest ( getInt, getInteger, getTickets, printTickets )
 import Collatz ( find3nPlus1 )
 
 someFunc :: IO ()

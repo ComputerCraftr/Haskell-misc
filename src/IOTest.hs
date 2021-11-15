@@ -1,12 +1,27 @@
 {-# LANGUAGE BangPatterns #-}
 module IOTest
-    ( getTickets
-    , printTickets
+    ( getInt
     , getInteger
+    , getTickets
+    , printTickets
     ) where
 
 import Text.Read ( readMaybe )
-import Data.Maybe ( fromJust, isNothing )
+import Data.Maybe ( isNothing, fromJust, maybe )
+
+getInt :: IO Int
+getInt = do
+    putStrLn "Please enter an integer:"
+    inputLine <- getLine
+    let inputNum = readMaybe inputLine :: Maybe Int
+    maybe getInt return inputNum
+
+getInteger :: IO Integer
+getInteger = do
+    putStrLn "Please enter an integer:"
+    inputLine <- getLine
+    let inputNum = readMaybe inputLine :: Maybe Integer
+    maybe getInteger return inputNum
 
 getTicketsSection :: Char -> Int -> IO Int
 getTicketsSection !currentSection !numSeats = do
@@ -34,10 +49,3 @@ printTickets ticketsList
         putStrLn ("A: " ++ (show . head) ticketsList)
         putStrLn ("B: " ++ show (ticketsList !! 1))
         putStrLn ("C: " ++ (show . last) ticketsList)
-
-getInteger :: IO Integer
-getInteger = do
-    putStrLn "Please enter an integer:"
-    inputLine <- getLine
-    let inputNum = readMaybe inputLine :: Maybe Integer
-    maybe getInteger return inputNum
