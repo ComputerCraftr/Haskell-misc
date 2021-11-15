@@ -1,6 +1,6 @@
-module MonadTest
-    ( lastThreeElementsLessThan100
-    ) where
+module MonadTest (
+    lastThreeElementsLessThan100
+) where
 
 -- if the last element is less than 100, pop it off the list otherwise return nothing
 lessThan100 :: [Int] -> Maybe [Int]

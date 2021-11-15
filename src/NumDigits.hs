@@ -1,9 +1,9 @@
 {-# LANGUAGE BangPatterns #-}
-module NumDigits 
-    ( integerDigitsBaseN
-    , integerDigitsBase10
-    , integerDigitsBase256
-    ) where
+module NumDigits (
+    integerDigitsBaseN,
+    integerDigitsBase10,
+    integerDigitsBase256
+) where
 
 integerDigitsBaseNHelper :: (Integral a) => a -> a -> a -> a
 integerDigitsBaseNHelper !number !base !digits

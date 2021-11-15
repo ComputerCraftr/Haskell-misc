@@ -1,10 +1,10 @@
 {-# LANGUAGE BangPatterns #-}
-module IOTest
-    ( getInt
-    , getInteger
-    , getTickets
-    , printTickets
-    ) where
+module IOTest (
+    getInt,
+    getInteger,
+    getTickets,
+    printTickets
+) where
 
 import Text.Read ( readMaybe )
 import Data.Maybe ( isNothing, fromJust, maybe )

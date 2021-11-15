@@ -1,6 +1,6 @@
-module Karatsuba
-    ( karatsubaMultiplyRecursive
-    ) where
+module Karatsuba (
+    karatsubaMultiplyRecursive
+) where
 
 import NumDigits ( integerDigitsBase256 )
 

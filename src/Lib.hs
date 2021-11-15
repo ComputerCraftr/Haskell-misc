@@ -1,6 +1,6 @@
-module Lib
-    ( someFunc
-    ) where
+module Lib (
+    someFunc
+) where
 
 import NumDigits ( integerDigitsBase256 )
 import Karatsuba ( karatsubaMultiplyRecursive )

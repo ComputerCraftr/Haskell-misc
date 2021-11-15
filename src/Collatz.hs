@@ -1,7 +1,7 @@
 {-# LANGUAGE BangPatterns #-}
-module Collatz
-    ( find3nPlus1
-    ) where
+module Collatz (
+    find3nPlus1
+) where
 
 import NumDigits ( integerDigitsBase10 )
 
