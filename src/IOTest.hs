@@ -1,6 +1,7 @@
 module IOTest
     ( getTickets
     , printTickets
+    , getInteger
     ) where
 
 import Text.Read ( readMaybe )
@@ -32,3 +33,10 @@ printTickets ticketsList
         putStrLn ("A: " ++ (show . head) ticketsList)
         putStrLn ("B: " ++ show (ticketsList !! 1))
         putStrLn ("C: " ++ (show . last) ticketsList)
+
+getInteger :: IO Integer
+getInteger = do
+    putStrLn "Please enter an integer:"
+    inputLine <- getLine
+    let inputNum = readMaybe inputLine :: Maybe Integer
+    maybe getInteger return inputNum

@@ -29,6 +29,7 @@ library
       Karatsuba
       Lib
       MonadTest
+      NumDigits
   other-modules:
       Paths_Haskell_misc
   hs-source-dirs:

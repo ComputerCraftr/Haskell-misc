@@ -1,16 +1,8 @@
 module Karatsuba
     ( karatsubaMultiplyRecursive
-    , integerDigitsBase256
     ) where
 
-integerDigitsBase256Helper :: (Integral a) => a -> a -> a
-integerDigitsBase256Helper number digits
-    | number <= 0 = digits
-    -- Divide by 256 until the number is rounded down to zero
-    | otherwise = integerDigitsBase256Helper (number `quot` 256) $! (digits + 1)
-
-integerDigitsBase256 :: (Integral a) => a -> a
-integerDigitsBase256 number = integerDigitsBase256Helper number 0
+import NumDigits ( integerDigitsBase256 )
 
 -- The Karatsuba multiplication algorithm can work with numbers in any base so long as they have more than one digit
 karatsubaMultiplyRecursive :: (Integral a) => a -> a -> a
