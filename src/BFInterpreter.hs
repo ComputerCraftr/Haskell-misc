@@ -8,7 +8,7 @@ import IOTest ( getSingleChar )
 
 runBF :: [Char] -> IO ()
 runBF code = do
-    runBFHelper code (repeat 0) 0
+    runBFHelper code (length code) 0 (repeat 0) 0 []
     putStrLn ""
 
 incrementElement :: [Int] -> Int -> [Int]
@@ -38,57 +38,42 @@ setElement listInput element value
         let (firstHalf, secondHalf) = splitAt element listInput
         in firstHalf ++ value:tail secondHalf
 
--- This function is designed to be called on a string after the opening bracket has been removed
--- and return everything inside, including nested brackets, up until the closing bracket is reached
-stringInsideBrackets :: [Char] -> Int -> Int -> [Char]
-stringInsideBrackets [] _ _ = []
-stringInsideBrackets !listInput !openBrackets !index =
-    let x = listInput !! index in case x of
-        ']' -> do
-            if openBrackets > 1 then
-                stringInsideBrackets listInput (openBrackets - 1) (index + 1)
-            else
-                take index listInput
-        '[' -> stringInsideBrackets listInput (openBrackets + 1) (index + 1)
-        _   -> stringInsideBrackets listInput openBrackets (index + 1)
-
--- This function is designed to be called on a string after the opening bracket has been removed
--- and return everything after the closing bracket
-skipClosingBrackets :: [Char] -> Int -> [Char]
-skipClosingBrackets [] _ = []
-skipClosingBrackets (x:xs) !openBrackets = case x of
+-- This function is designed to be called on a string with the index immediately after the opening
+-- bracket, skip through any nested brackets, and return the index after the closing bracket
+skipClosingBrackets :: [Char] -> Int -> Int -> Int
+skipClosingBrackets [] !index _ = index
+skipClosingBrackets !charList !index !openBrackets = case charList !! index of
     ']' -> do
         if openBrackets > 1 then
-            skipClosingBrackets xs (openBrackets - 1)
+            skipClosingBrackets charList (index + 1) (openBrackets - 1)
         else
-            xs
-    '[' -> skipClosingBrackets xs (openBrackets + 1)
-    _   -> skipClosingBrackets xs openBrackets
+            index + 1
+    '[' -> skipClosingBrackets charList (index + 1) (openBrackets + 1)
+    _   -> skipClosingBrackets charList (index + 1) openBrackets
 
-runBFLoop :: [Char] -> [Int] -> Int -> IO ([Int], Int)
-runBFLoop !code !stack !pointer
-    | null code || stack !! pointer == 0 = return (stack, pointer)
-    | otherwise = do
-        (newStack, newPointer) <- runBFHelper code stack pointer
-        runBFLoop code newStack newPointer
-
-runBFHelper :: [Char] -> [Int] -> Int -> IO ([Int], Int)
-runBFHelper !code !stack !pointer
-    | null code = return (stack, pointer)
-    | otherwise = let x:xs = code in case x of
-        '>' -> runBFHelper xs stack (pointer + 1)
-        '<' -> runBFHelper xs stack (max (pointer - 1) 0)
-        '+' -> runBFHelper xs (incrementElement stack pointer) pointer
-        '-' -> runBFHelper xs (decrementElement stack pointer) pointer
+runBFHelper :: [Char] -> Int -> Int -> [Int] -> Int -> [Int] -> IO ()
+runBFHelper !code !codeLen !index !stack !pointer !loopStartIndexes
+    | null code || index == codeLen = return ()
+    | otherwise = case code !! index of
+        '>' -> runBFHelper code codeLen (index + 1) stack (pointer + 1) loopStartIndexes
+        '<' -> runBFHelper code codeLen (index + 1) stack (max (pointer - 1) 0) loopStartIndexes
+        '+' -> runBFHelper code codeLen (index + 1) (incrementElement stack pointer) pointer loopStartIndexes
+        '-' -> runBFHelper code codeLen (index + 1) (decrementElement stack pointer) pointer loopStartIndexes
         '.' -> do
             putStr [chr (stack !! pointer)]
-            runBFHelper xs stack pointer
+            runBFHelper code codeLen (index + 1) stack pointer loopStartIndexes
         ',' -> do
             inputChar <- getSingleChar
-            runBFHelper xs (setElement stack pointer (ord inputChar)) pointer
+            runBFHelper code codeLen (index + 1) (setElement stack pointer (ord inputChar)) pointer loopStartIndexes
         '[' -> do
-            (newStack, newPointer) <- runBFLoop (stringInsideBrackets xs 1 0) stack pointer
-            runBFHelper (skipClosingBrackets xs 1) newStack newPointer
-        _   -> do
-            putStrLn ("Invalid operator \"" ++ [x] ++ "\" encountered.")
-            return ([], 0)
+            if stack !! pointer > 0 then
+                let loopStartIndex = index + 1 in
+                runBFHelper code codeLen loopStartIndex stack pointer (loopStartIndex:loopStartIndexes)
+            else
+                runBFHelper code codeLen (skipClosingBrackets code (index + 1) 1) stack pointer loopStartIndexes
+        ']' -> do
+            if stack !! pointer > 0 then
+                runBFHelper code codeLen (head loopStartIndexes) stack pointer loopStartIndexes
+            else
+                runBFHelper code codeLen (index + 1) stack pointer (tail loopStartIndexes)
+        _   -> putStrLn ("Invalid operator \"" ++ [code !! index] ++ "\" encountered.")
