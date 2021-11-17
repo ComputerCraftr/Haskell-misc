@@ -40,19 +40,20 @@ setElement listInput element value
 
 -- This function is designed to be called on a string with the index immediately after the opening
 -- bracket, skip through any nested brackets, and return the index after the closing bracket
-skipClosingBrackets :: [Char] -> Int -> Int -> Int
-skipClosingBrackets [] !index _ = index
-skipClosingBrackets !charList !index !openBrackets =
-    let nextIndex = index + 1
-        skipClosingBracketsNextIndex = skipClosingBrackets charList nextIndex
-    in case charList !! index of
-        ']' -> do
-            if openBrackets > 1 then
-                skipClosingBracketsNextIndex (openBrackets - 1)
-            else
-                nextIndex
-        '[' -> skipClosingBracketsNextIndex (openBrackets + 1)
-        _   -> skipClosingBracketsNextIndex openBrackets
+skipClosingBrackets :: [Char] -> Int -> Int -> Int -> Int
+skipClosingBrackets !charList !strLen !index !openBrackets
+    | null charList || index == strLen = index
+    | otherwise =
+        let nextIndex = index + 1
+            skipClosingBracketsNextIndex = skipClosingBrackets charList strLen nextIndex
+        in case charList !! index of
+            ']' -> do
+                if openBrackets > 1 then
+                    skipClosingBracketsNextIndex (openBrackets - 1)
+                else
+                    nextIndex
+            '[' -> skipClosingBracketsNextIndex (openBrackets + 1)
+            _   -> skipClosingBracketsNextIndex openBrackets
 
 -- Fully tail recursive BF interpreter function
 runBFHelper :: [Char] -> Int -> [Int] -> Int -> [Int] -> Int -> IO ()
@@ -64,7 +65,11 @@ runBFHelper !code !codeLen !loopStartIndexes !index !stack !pointer
             runBFCodeNextIndex = runBFCode loopStartIndexes nextIndex
         in case code !! index of
             '>' -> runBFCodeNextIndex stack (pointer + 1)
-            '<' -> runBFCodeNextIndex stack (max (pointer - 1) 0)
+            '<' -> do
+                if pointer > 0 then
+                    runBFCodeNextIndex stack (pointer - 1)
+                else
+                    putStrLn ("Attempted to use negative pointer at index " ++ show index ++ ".")
             '+' -> runBFCodeNextIndex (incrementElement stack pointer) pointer
             '-' -> runBFCodeNextIndex (decrementElement stack pointer) pointer
             '.' -> do
@@ -77,10 +82,13 @@ runBFHelper !code !codeLen !loopStartIndexes !index !stack !pointer
                 if stack !! pointer > 0 then
                     runBFCode (nextIndex:loopStartIndexes) nextIndex stack pointer
                 else
-                    runBFCode loopStartIndexes (skipClosingBrackets code nextIndex 1) stack pointer
+                    runBFCode loopStartIndexes (skipClosingBrackets code codeLen nextIndex 1) stack pointer
             ']' -> do
-                if stack !! pointer > 0 then
-                    runBFCode loopStartIndexes (head loopStartIndexes) stack pointer
+                if null loopStartIndexes then
+                    putStrLn ("Closing bracket with no previous opening bracket encountered at index " ++ show index ++ ".")
                 else
-                    runBFCode (tail loopStartIndexes) nextIndex stack pointer
-            _   -> putStrLn ("Invalid operator \"" ++ [code !! index] ++ "\" encountered.")
+                    if stack !! pointer > 0 then
+                        runBFCode loopStartIndexes (head loopStartIndexes) stack pointer
+                    else
+                        runBFCode (tail loopStartIndexes) nextIndex stack pointer
+            _   -> putStrLn ("Invalid operator \"" ++ [code !! index] ++ "\" encountered at index " ++ show index ++ ".")
