@@ -3,37 +3,34 @@ module BFInterpreter (
     runBF
 ) where
 
+import Data.Int ( Int8 )
 import Data.Char ( chr, ord )
 import IOTest ( getSingleChar )
 
 runBF :: [Char] -> IO ()
 runBF code = do
-    runBFHelper code (length code) [] 0 (repeat 0) 0
+    runBFHelper code (length code) [] 0 (repeat (0 :: Int8)) 0
     putChar '\n'
 
-incrementElement :: [Int] -> Int -> [Int]
+incrementElement :: [Int8] -> Int -> [Int8]
 incrementElement listInput element
     | null listInput || element < 0 = listInput
     | otherwise =
         let (firstHalf, secondHalf) = splitAt element listInput
             x:xs = secondHalf
-        in case x of
-            255 -> firstHalf ++ 0:xs
-            _   -> firstHalf ++ (x+1):xs
+        in firstHalf ++ (x+1):xs
 
-decrementElement :: [Int] -> Int -> [Int]
+decrementElement :: [Int8] -> Int -> [Int8]
 decrementElement listInput element
     | null listInput || element < 0 = listInput
     | otherwise =
         let (firstHalf, secondHalf) = splitAt element listInput
             x:xs = secondHalf
-        in case x of
-            0 -> firstHalf ++ 255:xs
-            _ -> firstHalf ++ (x-1):xs
+        in firstHalf ++ (x-1):xs
 
-setElement :: [Int] -> Int -> Int -> [Int]
+setElement :: [Int8] -> Int -> Int8 -> [Int8]
 setElement listInput element value
-    | null listInput || element < 0 || value < 0 || value > 255 = listInput
+    | null listInput || element < 0 || value < 0 = listInput
     | otherwise =
         let (firstHalf, secondHalf) = splitAt element listInput
         in firstHalf ++ value:tail secondHalf
@@ -56,7 +53,7 @@ skipClosingBrackets !charList !strLen !index !openBrackets
             _   -> skipClosingBracketsNextIndex openBrackets
 
 -- Fully tail recursive BF interpreter function
-runBFHelper :: [Char] -> Int -> [Int] -> Int -> [Int] -> Int -> IO ()
+runBFHelper :: [Char] -> Int -> [Int] -> Int -> [Int8] -> Int -> IO ()
 runBFHelper !code !codeLen !loopStartIndexes !index !stack !pointer
     | null code || index == codeLen = return ()
     | otherwise =
@@ -73,11 +70,11 @@ runBFHelper !code !codeLen !loopStartIndexes !index !stack !pointer
             '+' -> runBFCodeNextIndex (incrementElement stack pointer) pointer
             '-' -> runBFCodeNextIndex (decrementElement stack pointer) pointer
             '.' -> do
-                (putChar . chr) (stack !! pointer)
+                (putChar . chr . fromIntegral . max 0) (stack !! pointer)
                 runBFCodeNextIndex stack pointer
             ',' -> do
                 inputChar <- getSingleChar
-                runBFCodeNextIndex (setElement stack pointer (ord inputChar)) pointer
+                runBFCodeNextIndex (setElement stack pointer ((fromIntegral . ord) inputChar)) pointer
             '[' -> do
                 if stack !! pointer > 0 then
                     runBFCode (nextIndex:loopStartIndexes) nextIndex stack pointer
