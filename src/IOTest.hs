@@ -53,9 +53,9 @@ getTickets = do
 
 printTickets :: [Int] -> IO ()
 printTickets ticketsList
-    | length ticketsList /= 3 = putStrLn "Invalid input"
-    | otherwise = do
+    | length ticketsList == 3 = do
         putStrLn "Tickets sold for section:"
         putStrLn ("A: " ++ (show . head) ticketsList)
         putStrLn ("B: " ++ show (ticketsList !! 1))
         putStrLn ("C: " ++ (show . last) ticketsList)
+    | otherwise = putStrLn "Invalid input"

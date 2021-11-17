@@ -22,5 +22,5 @@ someFunc = do
     --putStrLn "Input brainfuck program:"
     --inputCode <- getLine
     runBF "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++."
-    testInteger <- getInteger
-    putStrLn ("3n+1 steps, max digits = " ++ show (find3nPlus1 testInteger))
+    --testInteger <- getInteger
+    --putStrLn ("3n+1 steps, max digits = " ++ (show . find3nPlus1) testInteger)
