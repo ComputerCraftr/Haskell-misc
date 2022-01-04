@@ -12,7 +12,7 @@ bug-reports:    https://github.com/ComputerCraftr/Haskell-misc/issues
 author:         ComputerCraftr
 maintainer:     example@example.com
 copyright:      2021 ComputerCraftr
-license:        BSD3
+license:        MIT
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
@@ -32,12 +32,14 @@ library
       Lib
       MonadTest
       NumDigits
+      TSP
   other-modules:
       Paths_Haskell_misc
   hs-source-dirs:
       src
   build-depends:
       base >=4.7 && <5
+    , random >=1.2
   default-language: Haskell2010
 
 executable Haskell-misc-exe
@@ -50,6 +52,7 @@ executable Haskell-misc-exe
   build-depends:
       Haskell-misc
     , base >=4.7 && <5
+    , random >=1.2
   default-language: Haskell2010
 
 test-suite Haskell-misc-test
@@ -63,4 +66,5 @@ test-suite Haskell-misc-test
   build-depends:
       Haskell-misc
     , base >=4.7 && <5
+    , random >=1.2
   default-language: Haskell2010

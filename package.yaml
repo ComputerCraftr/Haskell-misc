@@ -1,7 +1,7 @@
 name:                Haskell-misc
 version:             0.1.0.0
 github:              "ComputerCraftr/Haskell-misc"
-license:             BSD3
+license:             MIT
 author:              "ComputerCraftr"
 maintainer:          "example@example.com"
 copyright:           "2021 ComputerCraftr"
@@ -21,6 +21,7 @@ description:         Please see the README on GitHub at <https://github.com/Comp
 
 dependencies:
 - base >= 4.7 && < 5
+- random >= 1.2
 
 library:
   source-dirs: src

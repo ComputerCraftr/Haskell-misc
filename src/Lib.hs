@@ -8,6 +8,7 @@ import MonadTest ( lastThreeElementsLessThan100 )
 import IOTest ( getInt, getInteger, getTickets, printTickets )
 import Collatz ( find3nPlus1 )
 import BFInterpreter ( runBF )
+import TSP ( City (..), cityDist, tspSolverGreedy, genRandomCities )
 
 someFunc :: IO ()
 someFunc = do
@@ -24,3 +25,6 @@ someFunc = do
     runBF "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++."
     --testInteger <- getInteger
     --putStrLn ("3n+1 steps, max digits = " ++ (show . find3nPlus1) testInteger)
+    print (tspSolverGreedy [City (5, 9), City (2, 7), City (8, 3), City (1, 6)])
+    testCities <- genRandomCities 15
+    print (tspSolverGreedy testCities)
