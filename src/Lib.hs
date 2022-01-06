@@ -26,5 +26,5 @@ someFunc = do
     --testInteger <- getInteger
     --putStrLn ("3n+1 steps, max digits = " ++ (show . find3nPlus1) testInteger)
     print (tspSolverGreedy [City (5, 9), City (2, 7), City (8, 3), City (1, 6)])
-    testCities <- genRandomCities 15
+    testCities <- genRandomCities 30
     print (tspSolverGreedy testCities)

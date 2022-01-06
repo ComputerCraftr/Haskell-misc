@@ -31,20 +31,17 @@ genRandomCitiesHelper !cities !count !numCities
         genRandomCitiesHelper (City (x, y):cities) (count + 1) numCities
 
 tspSolverGreedy :: [City] -> (Float, [Int])
-tspSolverGreedy !cities = tspSolverGreedyHelper cities (length cities) [0] 0 0 (-1) 0
+tspSolverGreedy !cities = tspSolverGreedyHelper cities (length cities) [0] 1 0 0 (fromIntegral (maxBound :: Int)) 0
 
-tspSolverGreedyHelper :: [City] -> Int -> [Int] -> Float -> Int -> Float -> Int -> (Float, [Int])
-tspSolverGreedyHelper !cities !citiesLen !visitedIdx !totalDist !checkingIdx !minDist !lowestDistIdx
-    | checkingIdx == citiesLen = tspSolverGreedyHelper cities citiesLen (lowestDistIdx:visitedIdx) (totalDist + minDist) 0 (-1) 0
-    | length visitedIdx < citiesLen =
-        let tspSolverGreedyNextIdx = tspSolverGreedyHelper cities citiesLen visitedIdx totalDist (checkingIdx + 1)
+tspSolverGreedyHelper :: [City] -> Int -> [Int] -> Int -> Float -> Int -> Float -> Int -> (Float, [Int])
+tspSolverGreedyHelper !cities !citiesLen !visitedIdx !visitedLen !totalDist !checkingIdx !minDist !lowestDistIdx
+    | checkingIdx == citiesLen = tspSolverGreedyHelper cities citiesLen (lowestDistIdx:visitedIdx) (visitedLen + 1) (totalDist + minDist) 0 (fromIntegral (maxBound :: Int)) 0
+    | visitedLen < citiesLen =
+        let tspSolverGreedyNextIdx = tspSolverGreedyHelper cities citiesLen visitedIdx visitedLen totalDist (checkingIdx + 1)
             tspSolverGreedyNoUpdate = tspSolverGreedyNextIdx minDist lowestDistIdx
-        in if checkingIdx `elem` visitedIdx then
+            dist = cityDist (cities !! head visitedIdx) (cities !! checkingIdx)
+        in if checkingIdx `elem` visitedIdx || dist >= minDist then
             tspSolverGreedyNoUpdate
         else
-            let dist = cityDist (cities !! head visitedIdx) (cities !! checkingIdx) in
-            if dist < minDist || minDist == -1 then
-                tspSolverGreedyNextIdx dist checkingIdx
-            else
-                tspSolverGreedyNoUpdate
+            tspSolverGreedyNextIdx dist checkingIdx
     | otherwise = (totalDist, reverse visitedIdx)
