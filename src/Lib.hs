@@ -8,7 +8,7 @@ import MonadTest ( lastThreeElementsLessThan100 )
 import IOTest ( getInt, getInteger, getTickets, printTickets )
 import Collatz ( find3nPlus1 )
 import BFInterpreter ( runBF )
-import TSP ( City (..), cityDist, tspSolverGreedy, genRandomCities )
+import TSP ( City (..), cityDist, genRandomCities, trilaterateCity, tspSolverGreedy )
 
 someFunc :: IO ()
 someFunc = do
@@ -28,3 +28,8 @@ someFunc = do
     print (tspSolverGreedy [City (5, 9), City (2, 7), City (8, 3), City (1, 6)])
     testCities <- genRandomCities 30
     print (tspSolverGreedy testCities)
+    let originCity = City (0, 0)
+    let secondCity = City (100, 0)
+    let testCity = City (3, 8)
+    print testCity
+    print (trilaterateCity (cityDist testCity originCity) (cityDist testCity secondCity))
