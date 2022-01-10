@@ -2,9 +2,10 @@
 module TSP (
     City (..),
     cityDist,
-    genRandomCities,
     trilaterateCity,
-    tspSolverGreedy
+    genRandomCities,
+    tspSolverGreedy,
+    tspSolverGreedyDeterministic
 ) where
 
 import System.Random ( randomRIO )
@@ -21,9 +22,6 @@ getCityY (City a) = snd a
 cityDist :: City -> City -> Float
 cityDist !cityOne !cityTwo = (sqrt . fromIntegral) ((getCityX cityTwo - getCityX cityOne) ^ 2 + (getCityY cityTwo - getCityY cityOne) ^ 2)
 
-genRandomCities :: Int -> IO [City]
-genRandomCities = genRandomCitiesHelper [] 0
-
 -- The coordinates for a point can be calculated using the distance to two or three known locations (for example, (0, 0) and (100, 0) here) by treating the distances as radii,
 -- setting the circle equations equal to each other, solving for x, and finally plugging the result back into one of the circle equations for y. Normally, this would produce two
 -- solutions from the positive and negative square roots, but we have restricted the domain to the first quadrant here, so we know that the positive root is the correct solution.
@@ -33,6 +31,9 @@ trilaterateCity !originDist !secondDist =
     let x_coord = (originDist ^ 2 - secondDist ^ 2 + 10000) / 200
         y_coord = sqrt (originDist ^ 2 - x_coord ^ 2)
     in City (round x_coord, round y_coord)
+
+genRandomCities :: Int -> IO [City]
+genRandomCities = genRandomCitiesHelper [] 0
 
 genRandomCitiesHelper :: [City] -> Int -> Int -> IO [City]
 genRandomCitiesHelper !cities !count !numCities
@@ -51,9 +52,35 @@ tspSolverGreedyHelper !cities !citiesLen !visitedIdx !visitedLen !totalDist !che
     | visitedLen < citiesLen =
         let tspSolverGreedyNextIdx = tspSolverGreedyHelper cities citiesLen visitedIdx visitedLen totalDist (checkingIdx + 1)
             tspSolverGreedyNoUpdate = tspSolverGreedyNextIdx minDist lowestDistIdx
-            dist = cityDist (cities !! head visitedIdx) (cities !! checkingIdx)
-        in if checkingIdx `elem` visitedIdx || dist >= minDist then
+            currentCity = cities !! checkingIdx
+            dist = cityDist (cities !! head visitedIdx) currentCity
+        -- In case distance is equal, use x coordinate as a tie breaker
+        in if checkingIdx `elem` visitedIdx || dist > minDist || (dist == minDist && getCityX currentCity > getCityX (cities !! lowestDistIdx)) then
             tspSolverGreedyNoUpdate
         else
             tspSolverGreedyNextIdx dist checkingIdx
     | otherwise = (totalDist, reverse visitedIdx)
+
+firstClosestToOrigin :: [City] -> [City]
+firstClosestToOrigin !cities = firstClosestToOriginHelper cities (length cities) 0 (fromIntegral (maxBound :: Int)) 0
+
+firstClosestToOriginHelper :: [City] -> Int -> Int -> Float -> Int -> [City]
+firstClosestToOriginHelper !cities !citiesLen !checkingIdx !minDist !lowestDistIdx
+    | checkingIdx == citiesLen =
+        let (firstHalf, secondHalf) = splitAt lowestDistIdx cities
+        in (cities !! lowestDistIdx):(firstHalf ++ tail secondHalf)
+    | otherwise =
+        let originCity = City (0, 0)
+            currentCity = cities !! checkingIdx
+            dist = cityDist originCity currentCity
+            firstClosestToOriginNextIdx = firstClosestToOriginHelper cities citiesLen (checkingIdx + 1)
+            firstClosestToOriginNoUpdate = firstClosestToOriginNextIdx minDist lowestDistIdx
+        -- In case distance is equal, use x coordinate as a tie breaker
+        in if dist > minDist || (dist == minDist && getCityX currentCity > getCityX (cities !! lowestDistIdx)) then
+            firstClosestToOriginNoUpdate
+        else
+            firstClosestToOriginNextIdx dist checkingIdx
+
+-- This deterministic solver will always visit the cities from the list in the same order, regardless of how the list of cities itself is sorted
+tspSolverGreedyDeterministic :: [City] -> (Float, [Int])
+tspSolverGreedyDeterministic = tspSolverGreedy . firstClosestToOrigin
