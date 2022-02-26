@@ -27,6 +27,7 @@ library
   exposed-modules:
       BFInterpreter
       Collatz
+      CompositePowers
       IOTest
       Karatsuba
       Lib
