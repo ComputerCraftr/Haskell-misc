@@ -4,7 +4,7 @@ module Lib (
 
 import BFInterpreter (runBF)
 import TSP (City(..), genRandomCities, tspSolverGreedy, tspSolverGreedyDeterministic)
-import CompositePowers (find2PowNMinus1Factors)
+import CompositePowers (find2PowNMinus1Factors, findPowNMinus1Factors)
 
 someFunc :: IO ()
 someFunc = do
@@ -23,3 +23,4 @@ someFunc = do
     print (find2PowNMinus1Factors 2 8)
     print (find2PowNMinus1Factors 2 4)
     print (find2PowNMinus1Factors 2 2)
+    print (findPowNMinus1Factors 3 2 7)

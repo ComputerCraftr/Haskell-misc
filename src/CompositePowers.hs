@@ -1,6 +1,7 @@
 {-# LANGUAGE BangPatterns #-}
 module CompositePowers (
     find2PowNMinus1Factors,
+    findPowNMinus1Factors,
     sumPowersFast
 ) where
 
@@ -11,9 +12,13 @@ module CompositePowers (
 -- Step 3 - run this function on the two factors of n to receive two factors of z
 -- Step 4 - the first factor x can also be written in the form 2 ^ n - 1, so continue from step 1 with z = x
 find2PowNMinus1Factors :: (Integral a) => a -> a -> (a, a)
-find2PowNMinus1Factors factorNOne factorNTwo =
-    let x = 2 ^ factorNTwo - 1
-        y = sumPowersFast 2 factorNTwo (factorNOne - 1)
+find2PowNMinus1Factors = findPowNMinus1Factors 2
+
+-- This relationship holds for any composite number which can be written in the form b ^ n - 1
+findPowNMinus1Factors :: (Integral a) => a -> a -> a -> (a, a)
+findPowNMinus1Factors base factorNOne factorNTwo =
+    let x = base ^ factorNTwo - 1
+        y = sumPowersFast base factorNTwo (factorNOne - 1)
     in (x, y)
 
 -- sum(base^(n*expMulti),n,0,terms) = (base^((terms + 1) * expMulti) - 1) / (base^expMulti - 1)
