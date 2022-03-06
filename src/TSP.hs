@@ -39,9 +39,13 @@ genRandomCitiesHelper :: [City] -> Int -> Int -> IO [City]
 genRandomCitiesHelper !cities !count !numCities
     | count == numCities = return cities
     | otherwise = do
-        x <- randomRIO (0, 100) :: IO Int
-        y <- randomRIO (0, 100) :: IO Int
-        genRandomCitiesHelper (City (x, y):cities) (count + 1) numCities
+        x <- randomRIO (1, 255) :: IO Int
+        y <- randomRIO (1, 255) :: IO Int
+        let newCity = City (x, y)
+        if newCity `elem` cities then
+            genRandomCitiesHelper cities count numCities
+        else
+            genRandomCitiesHelper (newCity:cities) (count + 1) numCities
 
 tspSolverGreedy :: [City] -> (Double, [Int])
 tspSolverGreedy !cities = tspSolverGreedyHelper cities (length cities) [0] 1 0 0 (fromIntegral (maxBound :: Int)) 0
