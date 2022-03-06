@@ -6,11 +6,20 @@ import BFInterpreter (runBF)
 import TSP (City(..), genRandomCities, tspSolverGreedy, tspSolverGreedyDeterministic)
 import CompositePowers (find2PowNMinus1Factors, findPowNMinus1Factors)
 
+printList :: (a -> IO ()) -> [a] -> IO ()
+printList f (x:xs) = do
+    f x
+    printList f xs
+printList f [] = putChar '\n'
+
 someFunc :: IO ()
 someFunc = do
-    --putStrLn "Input brainfuck program:"
-    --inputCode <- getLine
-    --runBF "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++."
+    {-
+    putStrLn "Input brainfuck program:"
+    inputCode <- getLine
+    runBF "++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++."
+    -}
+
     testCities <- genRandomCities 30
     let testCitiesReversed = reverse testCities
     putStrLn "Greedy TSP Solver:"
@@ -19,8 +28,10 @@ someFunc = do
     putStrLn "Deterministic greedy TSP Solver:"
     print (tspSolverGreedyDeterministic testCities)
     print (tspSolverGreedyDeterministic testCitiesReversed)
-    print (tspSolverGreedyDeterministic [City (5, 9), City (2, 7), City (8, 3), City (1, 6)])
-    print (find2PowNMinus1Factors 2 8)
-    print (find2PowNMinus1Factors 2 4)
-    print (find2PowNMinus1Factors 2 2)
-    print (findPowNMinus1Factors 3 2 7)
+
+    {-
+    let printFst idx = print (testCities !! idx)
+    let printSnd idx = print (testCitiesReversed !! idx)
+    printList printFst ((snd . tspSolverGreedyDeterministic) testCities)
+    printList printSnd ((snd . tspSolverGreedyDeterministic) testCitiesReversed)
+    -}
