@@ -54,8 +54,13 @@ tspSolverGreedyHelper !cities !citiesLen !visitedIdx !visitedLen !totalDist !che
             tspSolverGreedyNoUpdate = tspSolverGreedyNextIdx minDist lowestDistIdx
             currentCity = cities !! checkingIdx
             dist = cityDist (cities !! head visitedIdx) currentCity
-        -- In case distance is equal, use y coordinate as a tie breaker
-        in if checkingIdx `elem` visitedIdx || dist > minDist || (dist == minDist && getCityY currentCity > getCityY (cities !! lowestDistIdx)) then
+            distEqual = dist == minDist
+            currentY = getCityY currentCity
+            currentX = getCityX currentCity
+            lowestY = getCityY (cities !! lowestDistIdx)
+            lowestX = getCityX (cities !! lowestDistIdx)
+        -- In case distance is equal, use y coordinate and then x coordinate as tie breakers
+        in if checkingIdx `elem` visitedIdx || dist > minDist || (distEqual && currentY > lowestY) || (distEqual && currentY == lowestY && currentX > lowestX) then
             tspSolverGreedyNoUpdate
         else
             tspSolverGreedyNextIdx dist checkingIdx
@@ -68,17 +73,24 @@ firstClosestToOrigin !cities = firstClosestToOriginHelper cities (length cities)
 firstClosestToOriginHelper :: [City] -> Int -> Int -> Double -> Int -> [City]
 firstClosestToOriginHelper !cities !citiesLen !checkingIdx !minDist !lowestDistIdx
     | checkingIdx == citiesLen =
-        let (firstHalf, secondHalf) = splitAt lowestDistIdx cities
-        -- Swap the first city with the one closest to (0, 0)
-        in cities !! lowestDistIdx:tail firstHalf ++ head firstHalf:tail secondHalf
+        case lowestDistIdx of
+            0 -> cities
+            _ -> let (firstHalf, secondHalf) = splitAt lowestDistIdx cities
+                -- Swap the first city with the one closest to (0, 0)
+                in cities !! lowestDistIdx:tail firstHalf ++ head firstHalf:tail secondHalf
     | otherwise =
         let originCity = City (0, 0)
             currentCity = cities !! checkingIdx
             dist = cityDist originCity currentCity
+            distEqual = dist == minDist
+            currentY = getCityY currentCity
+            currentX = getCityX currentCity
+            lowestY = getCityY (cities !! lowestDistIdx)
+            lowestX = getCityX (cities !! lowestDistIdx)
             firstClosestToOriginNextIdx = firstClosestToOriginHelper cities citiesLen (checkingIdx + 1)
             firstClosestToOriginNoUpdate = firstClosestToOriginNextIdx minDist lowestDistIdx
-        -- In case distance is equal, use y coordinate as a tie breaker
-        in if dist > minDist || (dist == minDist && getCityY currentCity > getCityY (cities !! lowestDistIdx)) then
+        -- In case distance is equal, use y coordinate and then x coordinate as tie breakers
+        in if dist > minDist || (distEqual && currentY > lowestY) || (distEqual && currentY == lowestY && currentX > lowestX) then
             firstClosestToOriginNoUpdate
         else
             firstClosestToOriginNextIdx dist checkingIdx
